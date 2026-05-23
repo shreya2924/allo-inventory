@@ -3,10 +3,12 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
+
   const reservation = await prisma.reservation.findUnique({
-    where: { id: params.id },
+    where: { id },
   });
 
   if (!reservation) {
@@ -35,7 +37,7 @@ export async function POST(
       data: { reserved: { decrement: reservation.quantity } },
     }),
     prisma.reservation.update({
-      where: { id: params.id },
+      where: { id },
       data: { status: "RELEASED", releasedAt: new Date() },
     }),
   ]);

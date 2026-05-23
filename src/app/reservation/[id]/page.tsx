@@ -13,9 +13,10 @@ async function getReservation(id: string) {
 export default async function ReservationPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const reservation = await getReservation(params.id);
+  const { id } = await params;
+  const reservation = await getReservation(id);
 
   if (!reservation) {
     return (
